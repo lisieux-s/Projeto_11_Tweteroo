@@ -1,6 +1,8 @@
 import express from "express";
+import cors from 'cors';
 const server = express();
 server.use(express.json())
+server.use(cors())
 
 const users = [];
 const tweets = [];
@@ -19,12 +21,21 @@ server.post('/tweets', (req, res) => {
 
 server.get('/tweets', (req, res) => {
     let latestTweets = [];
-
+    
     for(let i = tweets.length-1; i > tweets.length - 10; i--) {
-        latestTweets.push(tweets[i])
+        let tweetUsername = tweets[i].username;
+        let tweetTweet = tweets[i].tweet;
+        let tweetAvatar = (users.find(user => user.username === tweetUsername)).avatar
+        console.log(tweetAvatar)
+        let tweet = {
+            username: tweetUsername,
+            avatar: tweetAvatar,
+            tweet: tweetTweet
+        }
+        latestTweets.push(tweet)
     }
     res.send(latestTweets);
 })
 
 server.listen(5000)
-console.log('running on port 5000')
+console.log('Running on port 5000')
